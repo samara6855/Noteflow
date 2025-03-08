@@ -52,7 +52,7 @@ const Feed = () => {
       <form className='relative w-full flex-center'>
         <input
         type='text'
-        placeholder='Search notes by any keyword or tag'
+        placeholder='Search notes'
         value={searchText}
         onChange={handleSearchChange}
         required
