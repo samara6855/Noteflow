@@ -18,22 +18,31 @@ const PromptCardList= ({data, handleTagClick})=> {
 }
 
 const Feed = () => {
-  const [searchText, setsearchText] = useState('');
-  const [posts, setposts] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
 
-  const handleSearchChange=(e)=>{
-
-  }
+  const handleSearchChange = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchText(query);
+  
+    const filtered = posts.filter((post) =>
+      post.prompt.toLowerCase().includes(query) ||
+     (post.tags && post.tags.toLowerCase().replace(/#/g, "").includes(query))
+    );
+  
+    setFilteredPosts(filtered);
+  };
+  
 
   useEffect(()=>{
     const fetchPosts = async()=>{
       const response = await fetch('/api/prompt');
       const data = await response.json();
 
-      setposts(data);
+      setPosts(data);
+      setFilteredPosts(data);
     }
-
-    console.log(posts);
 
     fetchPosts();
   },[]);
@@ -43,7 +52,7 @@ const Feed = () => {
       <form className='relative w-full flex-center'>
         <input
         type='text'
-        placeholder='Search notes by tag or username'
+        placeholder='Search notes by any keyword or tag'
         value={searchText}
         onChange={handleSearchChange}
         required
@@ -51,10 +60,7 @@ const Feed = () => {
         />
       </form>
 
-      <PromptCardList
-      data={posts}
-      handleTagClick={()=> {}}
-      />
+      <PromptCardList data={filteredPosts} handleTagClick={() => {}} />
     </section>
   )
 }
